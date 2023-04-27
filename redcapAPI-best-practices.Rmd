@@ -3,8 +3,8 @@ title: "redcapAPI Best Practices"
 author: "Shawn Garbett, Benjamin Nutter"
 date: "`r Sys.Date()`"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -389,6 +389,10 @@ exportRecordsTyped(test_conn,
 head()
 ```
 
+Recasting may be performed using a character vector of field names; a numeric 
+vector of field indices; or a logical vector (the logical vector must be
+the same length as the number of columns in the data frame).
+
 ### mChoice
 
 Users of `Hmisc` or `rms` might want multiple choice class fields added to 
@@ -408,7 +412,7 @@ remains character can be subject to a guess based on passing validation.
 This is kept as a separate function to ensure that the user makes 
 a clear choice in using guesswork. 
 
-```{r guess}
+```{r guess, eval = FALSE}
 exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
   guessCast(
     validation=valRx("^[0-9]{1,4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"), 
@@ -418,7 +422,7 @@ exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
 
 Since dates are common, a helper specifically for this guess is provided.
 
-```{r guessDate}
+```{r guessDate, eval = FALSE}
 exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
   guessDate(threshold=0.1)
 ```
@@ -433,7 +437,51 @@ widenRepeating
 
 ## Even More
 
-## Branching Logic NA detection
+### Branching Logic NA detection
+
+The `missingSummary` function provides a utility to look for missing values 
+within a dataset. The results account for branching logic in the instrument; 
+fields that are missing because branching logic did not expose them do not
+get counted as missing. One may restrict the summary to fields, forms, and/or 
+records as well. 
+
+```{r}
+missingSummary(test_conn, 
+               exportRecordsArgs = list(records = 10:29, 
+                                        fields = "record_id", 
+                                        forms = "branching_logic")) |>
+  head()
+```
+
+One limitation of `missingSummary`, however, is that the summary operates 
+exclusively within each row of the data. Thus, if your branching logic 
+utilizes values from previous events, this summary will not correctly identify
+non-missing values. 
+
+### Design your own API Calls
+
+`redcapAPI` are very specific in how they access the REDCap API and leave 
+very little flexibility to the user in the choice of arguments to pass to the
+API. This lack of flexibility is deliberate, as it helps limit the potential
+for errors and frustration to the typical user. Advanced users may, at times, 
+find our decisions limiting. Of there may be a need to use an API method that
+`redcapAPI` does not yet offer. 
+
+Users wishing to customize their API calls may use `makeApiCall`. This is a 
+flexible function that utilizes the `redcapConnection` object, permitting 
+customized calls within the same code style of the rest of the package. 
+
+Using `makeApiCall`, we can get User-Roles, even though `redcapAPI`
+does not have a dedicated method to retrieve those.
+
+```{r}
+response <- makeApiCall(sandbox_conn, 
+                        body = list(content = 'userRole', 
+                                    format = 'csv', 
+                                    returnFormat = 'csv'))
+read.csv(text = as.character(response), 
+         na.strings = '')
+```
 
 ### Cornacopia of Functions to explore
 
