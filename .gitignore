@@ -1,2 +1,7 @@
 *.html
 *.pdf
+*.aux
+redcapAPI-best-practices.knit.md
+*.log
+*.out
+*.tex

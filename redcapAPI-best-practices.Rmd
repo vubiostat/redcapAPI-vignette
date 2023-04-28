@@ -1,10 +1,10 @@
 ---
 title: "redcapAPI Best Practices"
-author: "Shawn Garbett, Benjamin Nutter"
+author: "Benjamin Nutter, Savannah Obregon, Shawn Garbett"
 date: "`r Sys.Date()`"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -42,6 +42,8 @@ job and have data ready for analysis. This can't happen without user
 involvement--if the library doesn't work easily for your needs open an
 issue on [github](https://github.com/vubiostat/redcapAPI/issues) and 
 we'll do our best to work with you. 
+
+If one wishes to reproduce these examples, see '*Reproducing this Vignette*' towards the end of this document. 
 
 ## API_KEY security
 
@@ -412,7 +414,7 @@ remains character can be subject to a guess based on passing validation.
 This is kept as a separate function to ensure that the user makes 
 a clear choice in using guesswork. 
 
-```{r guess, eval = FALSE}
+```{r guess}
 exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
   guessCast(
     test_conn,
@@ -423,7 +425,7 @@ exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
 
 Since dates are common, a helper specifically for this guess is provided.
 
-```{r guessDate, eval = FALSE}
+```{r guessDate}
 exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
   guessDate(test_conn, threshold=0.1)
 ```
@@ -466,9 +468,9 @@ find our decisions limiting. Of there may be a need to use an API method that
 
 Users wishing to customize their API calls may use `makeApiCall`. This is a 
 flexible function that utilizes the `redcapConnection` object, permitting 
-customized calls within the same code style of the rest of the package. 
+customized calls within the same code style of the rest of the package. It has an added benefit of the retry strategy for API call failures as mentioned in the '*Connection*' section above.
 
-Using `makeApiCall`, we can get User-Roles, even though `redcapAPI`
+For example, using `makeApiCall`, we can get User-Roles, even though `redcapAPI`
 does not have a dedicated method to retrieve those.
 
 ```{r}
@@ -480,12 +482,18 @@ read.csv(text = as.character(response),
          na.strings = '')
 ```
 
-FIXME: This one needs an example
 
 ### Cornacopia of Functions to explore
 
 FIXME: Benjamin--mention a lot of new functions to explore but
 nothing in depth. 
+
+### Reproducing this Vignette
+
+This requires building one's own test database. Functions to build a REDCap project and load with data are included, as well as the
+test database this was built from 
+
+FIXME: Benjamin--Example building test here.
 
 ## Thanks
 
