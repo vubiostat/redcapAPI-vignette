@@ -411,6 +411,7 @@ a clear choice in using guesswork.
 ```{r guess}
 exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
   guessCast(
+    test_conn,
     validation=valRx("^[0-9]{1,4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"), 
     cast=as.Date,
     threshold=0.1)
@@ -420,22 +421,23 @@ Since dates are common, a helper specifically for this guess is provided.
 
 ```{r guessDate}
 exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
-  guessDate(threshold=0.1)
+  guessDate(test_conn, threshold=0.1)
 ```
 
-### Drop Repeating Instrument NAs
+### Widen / Shorten a Repeating Instrument
 
-dropRepeatingNA
-
-### Widen a Repeating Instrument
-
-widenRepeating
+FIXME: Savannah--need a good writeup here.
 
 ## Even More
 
 ## Branching Logic NA detection
 
+FIXME: This one needs an example
+
 ### Cornacopia of Functions to explore
+
+FIXME: Benjamin--mention a lot of new functions to explore but
+nothing in depth. 
 
 ## Thanks
 
@@ -448,10 +450,10 @@ Thanks to all those that have made this effort possible for `redcapAPI` as an R 
 * Shawn Garbett
 * Will Gray
 * Frank Harrell
-* *Jeffrey Horner*
+* **Jeffrey Horner**
 * Omair Khan
 * Dandan Liu
-* *Benjamin Nutter*
+* **Benjamin Nutter**
 * Savannah Obregon
 * Jeremy Stephens
 * The R-Project and CRAN team
