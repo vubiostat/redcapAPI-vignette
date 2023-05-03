@@ -493,7 +493,7 @@ nothing in depth.
 This requires building one's own test database. Functions to build a REDCap project and load with data are included, as well as the
 test database this was built from 
 
-FIXME: Benjamin--Example building test here.
+FIXME: Thomas Dupont - Example building test database here. Pull from existing tests.
 
 ## Thanks
 
