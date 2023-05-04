@@ -434,6 +434,10 @@ exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
 
 FIXME: Savannah--need a good writeup here.
 
+### castForImport
+
+FIXME: Benjamin  fill in here. Example of checkbox___0 import is great. 
+
 ## Even More
 
 ### Branching Logic NA detection
