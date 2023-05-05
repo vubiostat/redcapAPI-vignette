@@ -436,8 +436,123 @@ FIXME: Savannah--need a good writeup here.
 
 ### castForImport
 
-FIXME: Benjamin  fill in here. Example of checkbox___0 import is great. 
+While it is true that `importRecords` will convert most data types into a 
+format that can be imported, it has proven to be overly rigid with blind 
+spots that cannot be easily overcome. In order to provide better support for
+importing data, we have provided the stand alone function `castForImport`.
 
+`castForImport` follows the same strategy of validation and casting 
+used in `exportRecordsTyped`. It returns a data frame where the fields are 
+cast in a format (usually character) that can be passed into `importRecords`. 
+
+```{r}
+Records <- exportRecordsTyped(test_conn, 
+                              records = 10:29, 
+                              forms = "data_import_export")
+
+Records$checkbox_test___x
+
+Records$dropdown_test
+```
+
+The default settings of `castForImport` are arranged so that most cases of 
+data will be recast for import as desired. 
+
+```{r}
+ForImport <- castForImport(Records, 
+                           test_conn)
+
+ForImport$checkbox_test___x
+
+ForImport$dropdown_test
+```
+
+The actual default casting list for `castForImport` is 
+
+```{r, eval = FALSE}
+list(
+  date_                    = as.character,
+  datetime_                = as.character,
+  datetime_seconds_        = as.character,
+  time_mm_ss               = castTimeMMSS,
+  time_hh_mm_ss            = as.character,
+  time                     = castTimeHHMM,
+  alpha_only               = as.character,
+  float                    = as.character,
+  number                   = as.character,
+  number_1dp               = castDpCharacter(1, dec_symbol = "."), 
+  number_1dp_comma_decimal = castDpCharacter(1),
+  number_2dp               = castDpCharacter(2, dec_symbol = "."), 
+  number_2dp_comma_decimal = castDpCharacter(2),
+  calc                     = as.character,
+  int                      = function(x, ...) as.character(as.integer(x)),
+  integer                  = function(x, ...) as.character(as.integer(x)),
+  yesno                    = castRaw,
+  truefalse                = function(x, ...) (x=='1' | tolower(x) =='true') + 0L,
+  checkbox                 = castRaw,
+  form_complete            = castRaw,
+  select                   = castRaw,
+  radio                    = castRaw,
+  dropdown                 = castRaw,
+  email                    = as.character, 
+  phone                    = as.character,
+  zipcode                  = as.character, 
+  slider                   = as.numeric,
+  sql                      = NA
+)
+```
+
+At this time, we have not changed anything within `importRecords`. Doing so 
+would require making a breaking change and we aren't prepared to do that on 
+short notice. However, we are considering a change in the future. For that 
+reason, we advise changing your processes to utilize `castForImport` prior
+to importing data. 
+
+#### Customizing Checkbox Casting
+
+We have encountered a special case of a checkbox function that `importRecords` 
+is entirely incapable of handling. In this case, the checkbox variable was
+defined with the options
+
+```
+0, 0
+1, 1
+2, 2
+```
+
+In this case, the field `checkbox_example___0` could actually be cast in a way
+that "0" indicates the checkbox was "checked". This is a scenario that is 
+problematic, as the API would determine that any value of "0" is unchecked. 
+
+In order to handle this scenario, we have provided a special casting function, 
+`castCheckForImport`, that allows the user to designate what values are to 
+represent a checked value. 
+
+```{r}
+Records <- data.frame(checkbox_test___x = c("0", "", "", "0"), 
+                      checkbox_test___y = c("y", "y", "", "y"))
+
+ForImport <- castForImport(Records, 
+                           test_conn, 
+                           fields = "checkbox_test___x",
+                           cast = list(checkbox = castCheckForImport(checked = "0")))
+ForImport
+```
+
+To complete an import in this scenario may require two passes with `castForImport`
+before calling `importRecords`.
+
+```{r, eval = FALSE}
+ForImport <- 
+  castForImport(Records, 
+                test_cond, 
+                fields = "checkbox_test___x", 
+                cast = list(checkbox = castCheckForImport(checked = "0"))) |>
+  castForImport(test_conn)
+
+importRecords(test_conn, 
+              data = ForImport)
+```
 ## Even More
 
 ### Branching Logic NA detection
@@ -489,8 +604,43 @@ read.csv(text = as.character(response),
 
 ### Cornacopia of Functions to explore
 
-FIXME: Benjamin--mention a lot of new functions to explore but
-nothing in depth. 
+FIXME: Note-- I think most of the new functionality is covered in 
+post-processing. This table should over a good overview of what the package
+offers though. 
+
+The functions offered by `redcapAPI` have expanded significantly in recent
+versions. The table below names all of the methods provided by the REDCap
+API and indicates which are supported by `redcapAPI`. 
+
+| System          | Export | Import | Delete | Other Method | 
+|---------|-----|-----|-----|--------------|
+| Arms            | Yes    | Yes    | Yes    | N/A          |
+| DAGs            | No     | No     | No     | SwitchDag (No)   | 
+|                 |        |        |        | exportDagAssigment (No) | 
+|                 |        |        |        | importDagAssigment (No) |
+| Events          | Yes    | Yes    | Yes    | N/A                |
+| Field Names     | Yes    | N/A    | N/A    | N/A                |
+| Files           | Yes    | Yes    | Yes    | N/A                |
+| File Repository | Yes    | Yes    | Yes    | createFileRepositoryFolder (Yes) |
+|                 |        |        |        | exportFileRepositoryListing (Yes) |
+| Instruments     | Yes    | N/A    | N/A    | exportMappings (Yes) | 
+|                 |        |        |        | importMappings (Yes) | 
+| Logging         | Yes    | N/A    | N/A    | N/A                  |
+| Meta Data       | Yes    | Yes    | N/A    | N/A                  | 
+| Project Info    | Yes    | Yes    | N/A    | createProject (No)   |
+|                 |        |        |        | exportProjectXML (No) | 
+| Records         | Yes    | Yes    | Yes    | renameRecord (No)    | 
+|                 |        |        |        | exportNextRecordName (Yes) | 
+| Reports         | Yes    | N/A    | N/A    | N/A                  |
+| Version         | Yes    | N/A    | N/A    | N/A                  |
+| Surveys         | N/A    | N/A    | N/A    | exportSurveyLink (No) | 
+|                 |        |        |        | exportSurveyParticipants (Yes) | 
+|                 |        |        |        | exportSurveyQueueLink (No) | 
+|                 |        |        |        | exportSurveyReturnCode (No) | 
+| Users           | Yes    | No     | No     | N/A                   |
+| UserRoles       | No     | No     | No     | exportUserRoleAssigments (No) | 
+|                 |        |        |        | importUserRoleAssigments (No) |
+
 
 ### Reproducing this Vignette
 
