@@ -62,13 +62,21 @@ without it.
 Logging into REDCap every time one wants to work, and then having to juggle
 multiple API_KEYs quickly becomes burdensome. Copy and pasting that API_KEY
 into code (plain text!) and then remembering to delete when finished is too
-easy to forget. Then a single git commit and simple push to share code and
-the API_KEY is exposed to the world. It's a very easy mistake to make.
+easy to forget. A single git commit and simple push to share code and
+the API_KEY is exposed to the world. It's a very easy mistake to make. In 
+the United States there is a minimum HIPAA penalty of $100 per medical record 
+exposed. An API_KEY that accesses a large clinical trial, if published
+could resulting millions of dollars in fines. 
 
-Note: **This functionality was originally in the package `rccola`, but this
+What follows is an example helper function using an encrypted local file
+to store API_KEYS to open connections to REDCap. Using this function
+greatly reduces the risk of exposure. 
+
+Note: *This functionality was originally in the package `rccola`, but this
 library is no longer needed. The functionality is built into `redcapAPI` and
 only requesting connections is supported. This is the preferred long term 
-solution.
+solution.*
+
 
 ```{r unlock}
 library(redcapAPI)
@@ -79,21 +87,28 @@ options(keyring_backend=keyring::backend_file)
 
 unlockREDCap(c(test_conn    = 'TestRedcapAPI', # REDCap project 1
                sandbox_conn = 'SandboxAPI'),   # REDCap project 2
-               keyring      = 'API_KEYs',
-               envir        = globalenv(),
-               url          = 'https://redcap.vanderbilt.edu/api/') 
+             keyring      = 'API_KEYs',
+             envir        = globalenv(),
+             url          = 'https://redcap.vanderbilt.edu/api/') 
 ```
 
 The first time this is called, it asks the user for a password that will be used
-to unlock the crypto locker `MyKeyring`. A keyring can contain multiple keys, 
-or API_KEY. It will prompt for each
+to unlock the crypto locker `API_KEYs`. A keyring can contain multiple API_KEYs
+and hence the name we've given it here--one is free to use any naming they
+desire. The first time it is run it will prompt for each
 API_KEY by the name you've given it, e.g. 'TestRedcapAPI'. If an API_KEY
 does not connect the call will fail and halt execution in R and it will be
-deleted from the key_ring to prompt you again. The function creates
-variables in the current environment of the given names. In future runs
-it only asks for the password and all the API_KEYs are retrieved and connected.
+deleted from the key_ring to prompt you to enter it again. Subsequent 
+calls will not prompt for an API_KEY, just the password you've given
+to unlock the remaining keys in the locker. It will stay open in an R session
+and not prompt again (*caveat: each knitr call creates a new session, so it
+will prompt each call to knitr*). 
 
-The keyring is stored in an 
+Specifying `envir=globalenv()` tells the function to create the connections
+in the global environment as variables. Without this the function returns 
+a list of the connections. 
+
+In summary, the keyring is stored in an 
 encrypted form accessible by a single password. If ones laptop were stolen or
 compromised it is far more difficult for a hacker to gain further access due
 to the encryption. 
@@ -103,8 +118,24 @@ these things in an plain text file `yml` in the directory above execution. This
 functionality is *only* recommended for system admins and should **never** be
 used on a work desktop or laptop.
 
-The `enviro` argument specifies an environment to write the connections into. 
-If not specified, one gets a named list of the requested connections opened.
+Also to make sure that R in trying to be helpful doesn't save API_KEYs to 
+files, it is recommended to turn off any saving of workspace data. In RStudio
+this is under "Tools -> Global Options (General)", set 'Save Workspace to .RData on 
+exit' to *Never*.
+
+For command line users create an `.Rprofile` file in your home directory 
+containing the following base function override:
+
+```
+utils::assignInNamespace(
+  "q",
+  function(save="no", status=0, runLast=TRUE)
+  {
+    .Internal(quit(save, status, runLast))
+  },
+  "base"
+)
+```
 
 If the easiest path is the best path, it will become the common path. We've
 done our best to make best security practice the easiest path. 
@@ -291,7 +322,7 @@ knitr::asis_output(format(attr(Records, "invalid")[1:10,]))
 ```
 
 This shows that the number records containing "1" did not pass the regex validation
-and they will become NA in the final output. The field name, type, row number and record id all help the user to quickly diagnose what is not validating.
+and these will become NA in the final output. The field name, type, row number and record id all help the user to quickly diagnose what is not validating.
 
 Once again, overriding the default is expected to be a rare need, but the
 option is available should it arise. Casting variables to the desired class
