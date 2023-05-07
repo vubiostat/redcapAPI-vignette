@@ -155,21 +155,22 @@ of the package gets this for **free**.
 `exportRecords`, `redcapFactor` and `redcapFlipFactor` still exist in the
 library but are deprecated. `exportRecordsTyped` is the preferred way forward.
 
-Once armed with a connection from a secured API_KEY in one's R session. The 
+Now armed with a connection from a secured API_KEY in one's R session, the 
 usual goal is to get the data into R, properly typed for use in an R
-model. Dates and Factors converted into a usable format that makes
+model. Dates and Factors need to be converted into a usable format that makes
 statistical modelling easy. Type theory is a very deep theoretical topic
-in mathematics and computer science. `redcapAPI` has made a lot of
-default choices which are felt to hopefully satisfy 80% of requests.
+in mathematics and computer science and thus this topic is a complex.
+`redcapAPI` has made a lot of default choices which we felt will satisfy 80% of
+use cases.
 
 However, these choices are not a limitation. Care has been taken to allow
 each of these choices a user defined override and be extensible to handle
 just about anything the user would prefer. The strategy chosen is
-called inversion of control. 
+called _inversion of control_. 
 
 Understanding the type 'casting' algorithm is important if the default
-choices are not satisfactory. Casting refers to the transformation
-of one data class in R to another. 
+choices are not satisfactory. Casting refering to the transformation
+of one data class in R to another (aka type casting). 
 
 ### The algorithm
 
@@ -636,10 +637,6 @@ read.csv(text = as.character(response),
 
 
 ### Cornacopia of Functions to explore
-
-FIXME: Note-- I think most of the new functionality is covered in 
-post-processing. This table should over a good overview of what the package
-offers though. 
 
 The functions offered by `redcapAPI` have expanded significantly in recent
 versions. The table below names all of the methods provided by the REDCap
