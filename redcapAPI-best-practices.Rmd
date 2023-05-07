@@ -80,6 +80,7 @@ options(keyring_backend=keyring::backend_file)
 unlockREDCap(c(test_conn    = 'TestRedcapAPI', # REDCap project 1
                sandbox_conn = 'SandboxAPI'),   # REDCap project 2
                keyring      = 'API_KEYs',
+               envir        = globalenv(),
                url          = 'https://redcap.vanderbilt.edu/api/') 
 ```
 
@@ -102,7 +103,11 @@ these things in an plain text file `yml` in the directory above execution. This
 functionality is *only* recommended for system admins and should **never** be
 used on a work desktop or laptop.
 
-If the easiest path is the best path, it will become the common path.
+The `enviro` argument specifies an environment to write the connections into. 
+If not specified, one gets a named list of the requested connections opened.
+
+If the easiest path is the best path, it will become the common path. We've
+done our best to make best security practice the easiest path. 
 
 ## The Connection Object (caching)
 
@@ -504,7 +509,7 @@ list(
 
 At this time, we have not changed anything within `importRecords`. Doing so 
 would require making a breaking change and we aren't prepared to do that on 
-short notice. However, we are considering a change in the future. For that 
+short notice. However, we are considering this change in the future. For that 
 reason, we advise changing your processes to utilize `castForImport` prior
 to importing data. 
 
@@ -554,6 +559,34 @@ importRecords(test_conn,
               data = ForImport)
 ```
 ## Even More
+
+### Bulk Records Pull
+
+A helper function is provided that will pull a set of projects and/or forms
+from projects into memory and apply a post processor set in bulk. 
+
+```{r eval=FALSE}
+exportBulkRecords(
+ rcon  = list(test = test_conn,
+              sand = sandbox_conn),
+ forms = list(test = c('form1', 'form2'),
+ envir = globalenv(),
+ post  = function(Records, rcon)
+         {
+           Records              |>
+           mChoiceCast(rcon)    |>
+           guessDat(rcon)       |>
+           widerRepeating(rcon)
+         }
+)
+```
+
+This references the connections we opened in the `unlockREDCap` section at
+the beginning and provides the names we want for the resulting records.
+The environment post execution contains the data.frames: `test.form1`,
+`test.form2`, `sand`. Each of these were retrieved, possibly using the forms
+argument and all were post processed in the same manner as specified by `post`.
+Any additional arguments are passed on to the `exportRecordsTyped` call. 
 
 ### Branching Logic NA detection
 
@@ -651,7 +684,7 @@ FIXME: Thomas Dupont - Example building test database here. Pull from existing t
 
 ## Thanks
 
-Thanks to all those that have made this effort possible for `redcapAPI` as an R package, and worked to make it better.
+Thanks to all those that have made this effort possible for `redcapAPI` as an R package, and striven to make it better.
 
 * Cole Beck
 * Lynne Berry
