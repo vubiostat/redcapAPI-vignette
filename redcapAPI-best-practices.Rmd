@@ -601,22 +601,24 @@ from projects into memory and apply a post processor set in bulk.
 exportBulkRecords(
  rcon  = list(test = test_conn,
               sand = sandbox_conn),
- forms = list(test = c('form1', 'form2'),
+ forms = list(test = c('repeating_instrument', 'branching_logic'),
  envir = globalenv(),
  post  = function(Records, rcon)
          {
            Records              |>
            mChoiceCast(rcon)    |>
-           guessDat(rcon)       |>
+           guessDate(rcon)      |>
            widerRepeating(rcon)
          }
 )
+test.repeating_instrument
+test.branching_logic
 ```
 
 This references the connections we opened in the `unlockREDCap` section at
 the beginning and provides the names we want for the resulting records.
-The environment post execution contains the data.frames: `test.form1`,
-`test.form2`, `sand`. Each of these were retrieved, possibly using the forms
+The environment post execution contains the data.frames: `test.repeating_instrument`,
+`test.branching_logic`, `sand`. Each of these were retrieved, possibly using the forms
 argument and all were post processed in the same manner as specified by `post`.
 Any additional arguments are passed on to the `exportRecordsTyped` call. 
 
