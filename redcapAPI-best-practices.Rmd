@@ -741,5 +741,7 @@ Thanks to all those that have made this effort possible for `redcapAPI` as an R 
 * **Benjamin Nutter**
 * Savannah Obregon
 * Jeremy Stephens
+* The Biostatistics department at Vanderbilt University Medical Center
 * The R-Project and CRAN team
-* The REDCap Consortium
+* The REDCap Team at Vanderbilt University Medical Center
+* National Institutes of Health (NIH/NCATS UL1 TR000445)
