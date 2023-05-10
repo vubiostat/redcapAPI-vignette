@@ -400,7 +400,19 @@ the REDCap field label. The units are done by searching the field annotation
 for something of the following form: `units={"meters"}` (using a regex). 
 
 If one desired custom attributes on columns based on this information it can 
-be done with an override. 
+be done with an override.
+
+### Forms
+
+If the forms argument is specified, the return from `exportRecordsTyped` filters
+the data down to only rows and columns containing information for the specified
+forms. 
+
+```{r}
+exportRecordsTyped(test_conn, forms="repeating_instrument")
+```
+
+There are only 2 rows from a test project with over 20 rows of data. 
 
 ## Post Processing
 
@@ -597,22 +609,22 @@ importRecords(test_conn,
 A helper function is provided that will pull a set of projects and/or forms
 from projects into memory and apply a post processor set in bulk. 
 
-```{r eval=FALSE}
+```{r}
 exportBulkRecords(
  rcon  = list(test = test_conn,
               sand = sandbox_conn),
- forms = list(test = c('repeating_instrument', 'branching_logic'),
+ forms = list(test = c('repeating_instrument', 'branching_logic')),
  envir = globalenv(),
  post  = function(Records, rcon)
          {
            Records              |>
            mChoiceCast(rcon)    |>
-           guessDate(rcon)      |>
-           widerRepeating(rcon)
+           guessDate(rcon)      #|>
+           #widerRepeating(rcon)
          }
 )
-test.repeating_instrument
-test.branching_logic
+test_repeating_instrument
+test_branching_logic
 ```
 
 This references the connections we opened in the `unlockREDCap` section at
