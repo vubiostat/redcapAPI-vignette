@@ -666,32 +666,6 @@ exclusively within each row of the data. Thus, if your branching logic
 utilizes values from previous events, this summary will not correctly identify
 non-missing values. 
 
-### Design your own API Calls
-
-`redcapAPI` are very specific in how they access the REDCap API and leave 
-very little flexibility to the user in the choice of arguments to pass to the
-API. This lack of flexibility is deliberate, as it helps limit the potential
-for errors and frustration to the typical user. Advanced users may, at times, 
-find our decisions limiting. Of there may be a need to use an API method that
-`redcapAPI` does not yet offer. 
-
-Users wishing to customize their API calls may use `makeApiCall`. This is a 
-flexible function that utilizes the `redcapConnection` object, permitting 
-customized calls within the same code style of the rest of the package. It has an added benefit of the retry strategy for API call failures as mentioned in the '*Connection*' section above.
-
-For example, using `makeApiCall`, we can get User-Roles, even though `redcapAPI`
-does not have a dedicated method to retrieve those.
-
-```{r}
-response <- makeApiCall(sandbox_conn, 
-                        body = list(content = 'userRole', 
-                                    format = 'csv', 
-                                    returnFormat = 'csv'))
-read.csv(text = as.character(response), 
-         na.strings = '')
-```
-
-
 ### Cornacopia of Functions to explore
 
 The functions offered by `redcapAPI` have expanded significantly in recent
@@ -734,6 +708,59 @@ This requires building one's own test database. Functions to build a REDCap proj
 test database this was built from 
 
 FIXME: Thomas Dupont - Example building test database here. Pull from existing tests.
+
+### Design your own API Calls
+
+`redcapAPI` calls are very specific in how they access the REDCap API and leave 
+very little flexibility to the user in the choice of arguments to pass to the
+API. This lack of flexibility is deliberate, as it helps limit the potential
+for errors and frustration to the typical user. Advanced users may, at times, 
+find our decisions limiting. Or there may be a need to use an API method that
+`redcapAPI` does not yet offer. 
+
+Users wishing to customize their API calls may use `makeApiCall`. This is a 
+flexible function that utilizes the `redcapConnection` object, permitting 
+customized calls within the same code style of the rest of the package. 
+It has an added benefit of the retry strategy for API call failures as 
+mentioned in the '*Connection*' section above.
+
+For example, using `makeApiCall`, we can get User-Roles, even though `redcapAPI`
+does not have a dedicated method to retrieve those.
+
+```{r}
+response <- makeApiCall(sandbox_conn, 
+                        body = list(content = 'userRole', 
+                                    format = 'csv', 
+                                    returnFormat = 'csv'))
+read.csv(text = as.character(response), 
+         na.strings = '')
+```
+
+When constructing custom calls, the user should read the REDCap API 
+documentation carefully. Any time a parameter calls for an _array_ of values, 
+the values from R must be passed in a very specific format--even if there is only
+a single value to pass. `redcapAPI` uses a function to format R vectors into 
+the proper format to be accepted by the API. The user should also adopt this 
+strategy in order to make custom API calls. 
+
+The `vectorToApiBodyList` function returns a list that can be appended to the 
+list passed to the `body` argument. 
+
+```{r}
+vectorToApiBodyList(c(1, 3, 4), "arms")
+```
+
+A call to export only a selection of arms from a project would look like this:
+
+```{r, eval = FALSE}
+makeApiCall(rcon, 
+            body = c(list(content = 'arm', 
+                          format = 'csv', 
+                          returnFormat = 'csv'), 
+                     vectorToApiBodyList(c(1, 3, 4), "arms")))
+```
+
+
 
 ## Thanks
 
