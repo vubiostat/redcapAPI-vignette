@@ -64,14 +64,12 @@ Logging into REDCap every time one wants to work, and then having to juggle
 multiple API_KEYs quickly becomes burdensome. Copy and pasting that API_KEY
 into code (plain text!) and then remembering to delete when finished is too
 easy to forget. A single git commit and simple push to share code and
-the API_KEY is exposed to the world. It's a very easy mistake to make. In 
-the United States there is a minimum HIPAA penalty of $100 per medical record 
-exposed. An API_KEY that accesses a large clinical trial, if published
-could resulting millions of dollars in fines. 
+the API_KEY is exposed to the world. It's a very easy mistake to make. The risk of exposure of any plain text file in a directory is high. The problem
+is so rampant that at one point there was a website, just scanning `github.com` for API_KEYS and posting them on a rolling kiosk and exposures were occurring every couple seconds. Many of these were for other APIs, but the risk of exposure through an inadvertent commit cannot be understated.
 
-What follows is an example helper function using an encrypted local file
-to store API_KEYS to open connections to REDCap. Using this function
-greatly reduces the risk of exposure. 
+The library provides a helper function that uses an encrypted local file
+to store API_KEYS for opening connections to REDCap. Using this function
+greatly reduces the risk of exposure. It has tools to facilitate a transfer of code to an automated environment as well. `?unlockREDcap` for those details. 
 
 Note: *This functionality was originally in the package `rccola`, but this
 library is no longer needed. The functionality is built into `redcapAPI` and
@@ -143,7 +141,7 @@ done our best to make best security practice the easiest path.
 
 ## The Connection Object (caching)
 
-The connection objects are a much richer object. During a lot of REDCap 
+The connection objects are a much richer object than the older version of the library. During a lot of REDCap 
 interaction the meta data is necessary to properly interpret the data and
 guides data transformation. Instead of calling multiple times with each
 call for this data, the meta data is now cached in the connection object.
@@ -166,7 +164,7 @@ test_conn$flush_all()
 
 ```
 
-Tip: Remember to flush cache after updating project meta data in the GUI.
+*Tip: Remember to flush cache after updating project meta data in the GUI.*
 
 Another benefit the new connection object brings is the idea of retry. When 
 developing, it's okay if the network hiccups, one can simple rerun the report
@@ -180,14 +178,14 @@ additional parameters.
 The default is to quietly make 5 retries on a call, with an interval of 2, 4, 8,
 16, and 32 seconds between retries. This greatly improves the odds of
 building a complex report involving a lot of REDCap calls. The user
-of the package gets this for **free**. 
+of the package gets this for **free** and by specifying `retries=10` it will try up to 30 minutes per call if necessary--allowing for downtime under this to not affect the generation of a report. This is important on automated systems that require reliabilily and can wait.  
 
 ## `exportRecordsTyped`
 
 `exportRecords`, `redcapFactor` and `redcapFlipFactor` still exist in the
-library but are deprecated. `exportRecordsTyped` is the preferred way forward.
+library but are deprecated. `exportRecordsTyped` is the preferred way forward. These functions will not longer be updated. 
 
-Now armed with a connection from a secured API_KEY in one's R session, the 
+Armed with a connection from a secured API_KEY in one's R session, the 
 usual goal is to get the data into R, properly typed for use in an R
 model. Dates and Factors need to be converted into a usable format that makes
 statistical modelling easy. Type theory is a very deep theoretical topic
@@ -201,7 +199,7 @@ just about anything the user would prefer. The strategy chosen is
 called _inversion of control_. 
 
 Understanding the type 'casting' algorithm is important if the default
-choices are not satisfactory. Casting refering to the transformation
+choices are not satisfactory. Casting referring to the transformation
 of one data class in R to another (aka type casting). 
 
 ### The algorithm
@@ -214,7 +212,7 @@ the data format of the actual data. This divergence can be a source of
 frustration and difficulty, thus we've designed the following steps of
 the process to cast a column of data from a project:
 
-1. Detect fields that are NA. This defaults to `""` or `"NA"`.
+1. Detect fields that are NA. This defaults to `""`--the empty string.
 2. Fields that are not NA, are passed through a validation for the `field_type`.
 3. Fields that are not NA, that pass validation are then cast to the desired class.
 
