@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Introduction
 
 [REsearch Data Collection or REDCap](https://projectredcap.org) puts a lot
-of power into the hands of folks wishing to collect data, from surveys to 
+of power into the hands of those wishing to collect data, from surveys to 
 running clinical trials. Once the data is collected the task of summarization 
 into reports falls upon the statistician or data scientist.
 [R](https://www.r-project.org/) being a useful tool, the department of
@@ -24,7 +24,8 @@ facilitate using REDCap from R.
 
 `redcapAPI` has grown a lot over time, and recently what
 once worked inside the code and interface for `redcapAPI` no longer aligned
-with where the REDCap project was today. To this end, a major refactor
+with where the REDCap project was today. The original package began to just
+expose the raw API directly into R. The common needs of users propagated via snippets of R code. To address the true needs of the user, a major refactor
 based on user feedback was undertaken to better address the challenges
 of a researcher in todays computing environments. This new interface
 began with version 2.7.0.
@@ -406,7 +407,7 @@ be done with an override.
 
 If the forms argument is specified, the return from `exportRecordsTyped` filters
 the data down to only rows and columns containing information for the specified
-forms. 
+forms. I.e., REDCap raw data is in "block sparse" format and what users really want is "long" format without extraneous empty rows. 
 
 ```{r}
 exportRecordsTyped(test_conn, forms="repeating_instrument")
