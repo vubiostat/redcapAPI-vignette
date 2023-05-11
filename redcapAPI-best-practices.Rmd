@@ -17,9 +17,9 @@ knitr::opts_chunk$set(echo = TRUE)
 of power into the hands of those wishing to collect data, from surveys to 
 running clinical trials. Once the data is collected the task of summarization 
 into reports falls upon the statistician or data scientist.
-[R](https://www.r-project.org/) being a useful tool, the department of
+[R](https://www.r-project.org/) being a useful tool for this purpose, the department of
 Biostatistics at Vanderbilt University Medical Center has provided the
-community with [`redcapAPI`](https://cran.r-project.org/package=redcapAPI) to
+community with the package [`redcapAPI`](https://cran.r-project.org/package=redcapAPI) to
 facilitate using REDCap from R. 
 
 `redcapAPI` has grown a lot over time, and recently what
@@ -135,6 +135,10 @@ utils::assignInNamespace(
   "base"
 )
 ```
+
+More details on keyring management are in the `keyring` package. One useful function if one forgets the password is to delete it and try again, `keyring::keyring_delete("API_KEYs")`
+
+Once again per our design goals, our choices and recommendations do not limit the user. If you have your own system of API_KEY management, one can still open a connection directly using `redcapConnection`. 
 
 If the easiest path is the best path, it will become the common path. We've
 done our best to make best security practice the easiest path. 
