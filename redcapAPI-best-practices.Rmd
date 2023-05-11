@@ -728,6 +728,7 @@ FIXME: Thomas Dupont - Example building test database here. Pull from existing t
 
 Thanks to all those that have made this effort possible for `redcapAPI` as an R package, and striven to make it better.
 
+* Will Beasley
 * Cole Beck
 * Lynne Berry
 * Caroline Birdrow
@@ -737,6 +738,8 @@ Thanks to all those that have made this effort possible for `redcapAPI` as an R 
 * Frank Harrell
 * **Jeffrey Horner**
 * Omair Khan
+* Stephen Lane
+* Marcus Lehr
 * Dandan Liu
 * **Benjamin Nutter**
 * Savannah Obregon
