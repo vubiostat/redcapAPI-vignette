@@ -479,9 +479,20 @@ exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
   guessDate(test_conn, threshold=0.1)
 ```
 
+### Split Data Into Forms
+
+There are times when it is desirable to separate a data set into its 
+forms/instruments. Most notably, this may be necessary to work with 
+repeating instruments in projects that have complex repeating structures. 
+
+Separating forms can be done via multiple calls to the API, or it 
+can be done in post-processing via `splitForms`. 
+
+FIXME: Make an example with splitForms after we finish the function.
+
 ### Widen / Shorten a Repeating Instrument
 
-FIXME: Savannah--need a good writeup here.
+FIXME: Savannah--need a good writeup here.  
 
 ### castForImport
 
