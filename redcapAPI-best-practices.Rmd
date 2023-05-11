@@ -492,7 +492,24 @@ FIXME: Make an example with splitForms after we finish the function.
 
 ### Widen / Shorten a Repeating Instrument
 
-FIXME: Savannah--need a good writeup here.  
+When working with repeating instruments in REDCap the default export is a
+tall and thin data frame where repeat instances are split into separate rows. 
+The `widerRepeated` function converts this data frame into a short and wide one. 
+Instead of multiple rows for one record, this function will transform all the 
+data for each record into one row using `reshape`. The function accepts a single 
+form and returns the reshaped data frame.
+
+```{r}
+Records <- exportRecordsTyped(test_conn,
+                              forms = "repeating_instrument")
+
+RecordsWide <- widerRepeated(Records, rcon)
+```
+
+The `widerRepeated` function will not widen forms passed into it without 
+repeating instruments. It will return these records in the original format. 
+This function expects that all values in the `redcap_repeat_instrument` column 
+are the same. If this is not the case, an error message will display.
 
 ### castForImport
 
@@ -631,7 +648,7 @@ exportBulkRecords(
            Records              |>
            mChoiceCast(rcon)    |>
            guessDate(rcon)      #|>
-           #widerRepeating(rcon)
+           widerRepeated(rcon)
          }
 )
 test_repeating_instrument
