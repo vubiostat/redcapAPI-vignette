@@ -111,10 +111,9 @@ these things in an plain text file `yml` in the directory above execution. This
 functionality is *only* recommended for system admins and should **never** be
 used on a work desktop or laptop.
 
-Also to make sure that R in trying to be helpful doesn't save API_KEYs to 
-files, it is recommended to turn off any saving of workspace data. In RStudio
-this is under "Tools -> Global Options (General)", set 'Save Workspace to .RData on 
-exit' to *Never*.
+To prevent R from inadvertently saving API_KEYs to files, it is recommended to turn 
+off any saving of workspace data. In RStudio this is under "Tools -> Global Options 
+(General)", set 'Save Workspace to .RData on exit' to *Never*.
 
 For command line users create an `.Rprofile` file in your home directory 
 containing the following base function override:
@@ -130,9 +129,10 @@ utils::assignInNamespace(
 )
 ```
 
-More details on keyring management are in the `keyring` package. One useful function if one forgets the password is to delete it and try again, `keyring::keyring_delete("API_KEYs")`
+More details on keyring management are in the `keyring` package. If one forgets their password, 
+one helpful solution is to delete it and try again using the `keyring::keyring_delete("API_KEYs")` function.
 
-Once again per our design goals, our choices and recommendations do not limit the user. If you have your own system of API_KEY management, one can still open a connection directly using `redcapConnection`. 
+Once again, per our design goals, our choices and recommendations do not limit the user. If you have your own system of API_KEY management, one can still open a connection directly using `redcapConnection`. 
 
 If the easiest path is the best path, it will become the common path. We've
 done our best to make best security practice the easiest path. 
