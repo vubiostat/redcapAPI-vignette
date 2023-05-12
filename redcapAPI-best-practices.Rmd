@@ -13,36 +13,30 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-[REsearch Data Collection or REDCap](https://projectredcap.org) puts a lot
-of power into the hands of those wishing to collect data, from surveys to 
-running clinical trials. Once the data is collected the task of summarization 
-into reports falls upon the statistician or data scientist.
-[R](https://www.r-project.org/) being a useful tool for this purpose, the department of
-Biostatistics at Vanderbilt University Medical Center has provided the
-community with the package [`redcapAPI`](https://cran.r-project.org/package=redcapAPI) to
-facilitate using REDCap from R. 
+[REsearch Data Collection or REDCap](https://projectredcap.org) puts a lot of power into the hands 
+of those wishing to collect data, from surveys to running clinical trials. Once the data is 
+collected the statistician or data scientist is responsible for summarizing the collected data 
+into reports. [R](https://www.r-project.org/) being a useful tool for this purpose, the department of
+Biostatistics at Vanderbilt University Medical Center has provided the community with the 
+package [`redcapAPI`](https://cran.r-project.org/package=redcapAPI) to facilitate using REDCap from R. 
 
-`redcapAPI` has grown a lot over time, and recently what
-once worked inside the code and interface for `redcapAPI` no longer aligned
-with where the REDCap project was today. The original package began to just
-expose the raw API directly into R. The common needs of users propagated via snippets of R code. To address the true needs of the user, a major refactor
-based on user feedback was undertaken to better address the challenges
-of a researcher in todays computing environments. This new interface
+`redcapAPI` has undergone significant growth over time, causing its previous code and interface 
+to no longer align with the current state of the REDCap project. The original package started 
+to directly expose the raw API in R and the common needs of users propagated via snippets of R code. 
+To address the true needs of the user, a major refactor based on user feedback was undertaken to 
+better address the challenges of a researcher in todays computing environments. This new interface
 began with version 2.7.0.
 
-Primarily the means of retrieving records has changed from `exportRecords` to
-`exportRecordsTyped`. The rename of the function is due to the change of the
-interface to allow time for systems to switch over to the new function. It
-is important to read over this document and understand the changes if one
-is a current user of `exportRecords`. However, the changes go much deeper
-and this document will outline what is a best practices approach to using
-the library.
+The primary change has been in the method of retrieving records, which has shifted from using 
+`exportRecords` to `exportRecordsTyped`. The reason for renaming the function is to provide ample 
+time for systems to transition to the new interface. It is important to read over this document 
+and understand the changes if one is a current user of `exportRecords`. However, the modifications 
+are considerably more extensive. This document will outline the best practices approach to using the library.
 
-The real goal is that a user make the fewest calls to do accomplish their
-job and have data ready for analysis. This can't happen without user 
-involvement--if the library doesn't work easily for your needs open an
-issue on [github](https://github.com/vubiostat/redcapAPI/issues) and 
-we'll do our best to work with you. 
+The ultimate goal is to minimize the number of calls a user needs to make to accomplish their task and 
+have the data prepared for analysis. This can't happen without user involvement--if the library doesn't 
+work easily for your needs please open an issue on [github](https://github.com/vubiostat/redcapAPI/issues) and 
+we will do our best to work with you. 
 
 If one wishes to reproduce these examples, see '*Reproducing this Vignette*' towards the end of this document. 
 
