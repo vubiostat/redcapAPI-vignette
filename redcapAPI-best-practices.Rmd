@@ -181,7 +181,7 @@ of the package gets this for **free** and by specifying `retries=10` it will try
 ## `exportRecordsTyped`
 
 `exportRecords`, `redcapFactor` and `redcapFlipFactor` still exist in the
-library but are deprecated. `exportRecordsTyped` is the preferred way forward. These functions will not longer be updated. 
+library but are deprecated. These functions will not longer be updated. `exportRecordsTyped` is the preferred method moving forward.  
 
 Armed with a connection from a secured API_KEY in one's R session, the 
 usual goal is to get the data into R, properly typed for use in an R
@@ -192,7 +192,7 @@ in mathematics and computer science and thus this topic is a complex.
 use cases.
 
 However, these choices are not a limitation. Care has been taken to allow
-each of these choices a user defined override and be extensible to handle
+a user defined override for each of these choices and to be extensible to handle
 just about anything the user would prefer. The strategy chosen is
 called _inversion of control_. 
 
@@ -215,7 +215,7 @@ the process to cast a column of data from a project:
 3. Fields that are not NA, that pass validation are then cast to the desired class.
 
 The choice of which routine to call is a defined by `field_type`. The current
-version of REDCap as of this writing is: `date_`, `datetime_`,
+version of REDCap at the time of this writing is: `date_`, `datetime_`,
 `datetime_seconds_`, `time_mm_ss`, `time_hh_mm_ss`, `time`, `float`, `number`,
 `calc`, `int`, `integer`, `yesno`, `truefalse`, `checkbox`, `form_complete`,
 `select`, `radio`, `dropdown`, and `sql`.
@@ -253,7 +253,7 @@ head(exportRecordsTyped(test_conn, na=list(date_=my_limited_na_detector))[,1:10]
 ```
 
 It is hopefully a rare case when this is needed. The next step, validation, has
-an available report that will hopefully make it clear when it is. 
+an available report that should clarify when it is required.
 
 ### Validation
 
@@ -361,8 +361,8 @@ list(
 )
 ```
 
-A common request is instead of using POSIXct for the dates, to use the
-internal as.Date function. 
+A common request is to use the internal as.Date function instead of POSIXct
+for handling dates.
 
 NOTE: An exported object `cast_raw` consists of NA for each of these keys. If 
 one desires raw data the cast function is NA. 
@@ -382,7 +382,7 @@ and control is in the hands of the user.
 ### Labels and Units
 
 Inversion of control is available for the assignment of attributes to columns
-as well. There exists an assignment argument which will is a list of functions
+as well. There exists an assignment argument which is a list of functions
 that will assign their output to the attribute using the name of the list key.
 
 The defaults add labels and units. 
@@ -421,7 +421,7 @@ The first we'll cover is `recastRecords`.
 
 ### `recastRecords`
 
-User have reported that `redcapFactorFlip` has been very useful for them
+Users have reported that `redcapFactorFlip` has been very useful for them
 to switch the way the data was cast in a back and forth manner. The current
 library has deprecated `redcapFactorFlip` and the new method to replace it
 is `recastRecords`.
@@ -493,7 +493,7 @@ FIXME: Make an example with splitForms after we finish the function.
 
 When working with repeating instruments in REDCap the default export is a
 tall and thin data frame where repeat instances are split into separate rows. 
-The `widerRepeated` function converts a data frame into a short and wide one and ignore any data.frame that is not a repeated_instrument (this allows for post processing pipelining). 
+The `widerRepeated` function converts this data frame into a short and wide one and ignores any data.frame that is not a repeated_instrument (this allows for post processing pipelining). 
 Instead of multiple rows for one record, this function will transform all the 
 data for each record into one row using `reshape`. The function accepts a single 
 form and returns the reshaped data frame.
@@ -510,7 +510,7 @@ widerRepeated(Records, test_conn)
 The `widerRepeated` function will not widen forms passed into it without 
 repeating instruments. It will return these records in the original format. 
 This function expects that all values in the `redcap_repeat_instrument` column 
-are the same. If this is not the case it will erro
+are the same. If this is not the case it will return and error.
 
 ### castForImport
 
