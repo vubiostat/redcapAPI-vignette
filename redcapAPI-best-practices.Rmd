@@ -42,24 +42,24 @@ If one wishes to reproduce these examples, see '*Reproducing this Vignette*' tow
 
 ## API_KEY security
 
-The first thing to consider is the API_KEY. This key is what allows for data
-export from a REDCap project. It is the equivalent of a user name, password and
+The first thing to consider is the API_KEY. This key is what enables the export of data 
+from a REDCap project. It is the equivalent of a user name, password and
 project identifier in a single character string. As such it should be protected
-as strongly as your password into the systems storing ones data. In the
+as strongly as your password into the systems that store one's data. In the
 United States, the HIPAA law has a minimum violation of $100 per private health
 record exposed. In a large clinical trial setting this can easily run into
 millions of dollars of potential risk.
 
-As such, **the API_KEY should never be stored in a plain text file** unless
+Therefore, **the API_KEY should never be stored in a plain text file** unless
 it's on a tightly monitored and secured production system that cannot work
 without it.
 
-Logging into REDCap every time one wants to work, and then having to juggle
-multiple API_KEYs quickly becomes burdensome. Copy and pasting that API_KEY
+Logging into REDCap every time one wants to work, and then juggling
+multiple API_KEYs quickly becomes burdensome. Copying and pasting that API_KEY
 into code (plain text!) and then remembering to delete when finished is too
 easy to forget. A single git commit and simple push to share code and
-the API_KEY is exposed to the world. It's a very easy mistake to make. The risk of exposure of any plain text file in a directory is high. The problem
-is so rampant that at one point there was a website, just scanning `github.com` for API_KEYS and posting them on a rolling kiosk and exposures were occurring every couple seconds. Many of these were for other APIs, but the risk of exposure through an inadvertent commit cannot be understated.
+the API_KEY is exposed to the world. Making a mistake is highly probable, and the risk of exposing any plain text file in a directory is high. The problem
+is so rampant that at one point there was a website scanning `github.com` for API_KEYS and posting them on a rolling kiosk. Exposures were occurring every few seconds. Many of these were for other APIs, but the risk of exposure through an inadvertent commit cannot be understated.
 
 The library provides a helper function that uses an encrypted local file
 to store API_KEYS for opening connections to REDCap. Using this function
