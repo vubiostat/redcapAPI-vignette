@@ -139,9 +139,9 @@ done our best to make best security practice the easiest path.
 
 ## The Connection Object (caching)
 
-The connection objects are a much richer object than the older version of the library. During a lot of REDCap 
-interaction the meta data is necessary to properly interpret the data and
-guides data transformation. Instead of calling multiple times with each
+The connection objects are a much richer object than the older version of the library. During many REDCap 
+interactions the meta data is necessary to properly interpret the data and
+guide data transformation. Instead of calling multiple times with each
 call for this data, the meta data is now cached in the connection object.
 
 Caching saves a lot of round trip calls, but brings with it the burden that
@@ -164,8 +164,8 @@ test_conn$flush_all()
 
 *Tip: Remember to flush cache after updating project meta data in the GUI.*
 
-Another benefit the new connection object brings is the idea of retry. When 
-developing, it's okay if the network hiccups, one can simple rerun the report
+Another benefit of the new connection object is the idea of retry. When 
+developing, it's okay if the network hiccups, one can simply rerun the report
 or command and try again. In a production environment, a report that makes
 a lot of API calls is assuming that all of those calls are successful to be
 successful. This is not that case 100% of the time, so a mitigation strategy
