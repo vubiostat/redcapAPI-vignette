@@ -117,6 +117,39 @@ these things in an plain text file `yml` in the directory above execution. This
 functionality is *only* recommended for system admins and should **never** be
 used on a work desktop or laptop.
 
+#### MacOS and Password Prompts
+
+Unfortunately, at present `askpass` and `getPass` are broken on MacOS when using RStudio and pressing the 'Knit' button. Password
+prompts will return `NULL` and never query the user. A workaround for MacOS users is to execute the above snippet from the console to configure the crypto locker, and then modify their `Rmd` to use parameters for the password. 
+
+````{verbatin}
+---
+title: "example MacOS w/ Params"
+output: html_document
+params: 
+  password:
+    label: "Enter Password for API_KEYs"
+    input: password
+    value: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(redcapAPI)
+
+options(keyring_backend=keyring::backend_file) # For MacOS
+
+unlockREDCap(c(test_conn    = 'TestRedcapAPI', # REDCap project 1
+               sandbox_conn = 'SandboxAPI'),   # REDCap project 2
+             keyring      = 'API_KEYs',
+             envir        = globalenv(),
+             url          = 'https://redcap.vanderbilt.edu/api/',
+             passwordFUN  = function(...) params$password) 
+```
+````
+
+#### Other API_KEY Leakage Risks
+
 Also to make sure that R in trying to be helpful doesn't save API_KEYs to 
 files, it is recommended to turn off any saving of workspace data. In RStudio
 this is under "Tools -> Global Options (General)", set 'Save Workspace to .RData on 
