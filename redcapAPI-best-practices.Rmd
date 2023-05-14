@@ -13,59 +13,53 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-[REsearch Data Collection or REDCap](https://projectredcap.org) puts a lot
-of power into the hands of those wishing to collect data, from surveys to 
-running clinical trials. Once the data is collected the task of summarization 
-into reports falls upon the statistician or data scientist.
-[R](https://www.r-project.org/) being a useful tool for this purpose, the department of
-Biostatistics at Vanderbilt University Medical Center has provided the
-community with the package [`redcapAPI`](https://cran.r-project.org/package=redcapAPI) to
-facilitate using REDCap from R. 
+[REsearch Data Collection or REDCap](https://projectredcap.org) puts a lot of power into the hands 
+of those wishing to collect data, from surveys to running clinical trials. Once the data is 
+collected the statistician or data scientist is responsible for summarizing the collected data 
+into reports. [R](https://www.r-project.org/) being a useful tool for this purpose, the department of
+Biostatistics at Vanderbilt University Medical Center has provided the community with the 
+package [`redcapAPI`](https://cran.r-project.org/package=redcapAPI) to facilitate using REDCap from R. 
 
-`redcapAPI` has grown a lot over time, and recently what
-once worked inside the code and interface for `redcapAPI` no longer aligned
-with where the REDCap project was today. The original package began to just
-expose the raw API directly into R. The common needs of users propagated via snippets of R code. To address the true needs of the user, a major refactor
-based on user feedback was undertaken to better address the challenges
-of a researcher in todays computing environments. This new interface
+`redcapAPI` has undergone significant growth over time, causing its previous code and interface 
+to no longer align with the current state of the REDCap project. The original package started 
+to directly expose the raw API in R and the common needs of users propagated via snippets of R code. 
+To address the true needs of the user, a major refactor based on user feedback was undertaken to 
+better address the challenges of a researcher in todays computing environments. This new interface
 began with version 2.7.0.
 
-Primarily the means of retrieving records has changed from `exportRecords` to
-`exportRecordsTyped`. The rename of the function is due to the change of the
-interface to allow time for systems to switch over to the new function. It
-is important to read over this document and understand the changes if one
-is a current user of `exportRecords`. However, the changes go much deeper
-and this document will outline what is a best practices approach to using
-the library.
+The primary change has been in the method of retrieving records, which has shifted from using 
+`exportRecords` to `exportRecordsTyped`. The reason for renaming the function is to provide ample 
+time for systems to transition to the new interface. It is important to read over this document 
+and understand the changes if one is a current user of `exportRecords`. However, the modifications 
+are considerably more extensive. This document will outline the best practices approach to using the library.
 
-The real goal is that a user make the fewest calls to do accomplish their
-job and have data ready for analysis. This can't happen without user 
-involvement--if the library doesn't work easily for your needs open an
-issue on [github](https://github.com/vubiostat/redcapAPI/issues) and 
-we'll do our best to work with you. 
+The ultimate goal is to minimize the number of calls a user needs to make to accomplish their task and 
+have the data prepared for analysis. This can't happen without user involvement--if the library doesn't 
+work easily for your needs please open an issue on [github](https://github.com/vubiostat/redcapAPI/issues) and 
+we will do our best to work with you. 
 
 If one wishes to reproduce these examples, see '*Reproducing this Vignette*' towards the end of this document. 
 
 ## API_KEY security
 
-The first thing to consider is the API_KEY. This key is what allows for data
-export from a REDCap project. It is the equivalent of a user name, password and
+The first thing to consider is the API_KEY. This key is what enables the export of data 
+from a REDCap project. It is the equivalent of a user name, password and
 project identifier in a single character string. As such it should be protected
-as strongly as your password into the systems storing ones data. In the
+as strongly as your password into the systems that store one's data. In the
 United States, the HIPAA law has a minimum violation of $100 per private health
 record exposed. In a large clinical trial setting this can easily run into
 millions of dollars of potential risk.
 
-As such, **the API_KEY should never be stored in a plain text file** unless
+Therefore, **the API_KEY should never be stored in a plain text file** unless
 it's on a tightly monitored and secured production system that cannot work
 without it.
 
-Logging into REDCap every time one wants to work, and then having to juggle
-multiple API_KEYs quickly becomes burdensome. Copy and pasting that API_KEY
+Logging into REDCap every time one wants to work, and then juggling
+multiple API_KEYs quickly becomes burdensome. Copying and pasting that API_KEY
 into code (plain text!) and then remembering to delete when finished is too
 easy to forget. A single git commit and simple push to share code and
-the API_KEY is exposed to the world. It's a very easy mistake to make. The risk of exposure of any plain text file in a directory is high. The problem
-is so rampant that at one point there was a website, just scanning `github.com` for API_KEYS and posting them on a rolling kiosk and exposures were occurring every couple seconds. Many of these were for other APIs, but the risk of exposure through an inadvertent commit cannot be understated.
+the API_KEY is exposed to the world. Making a mistake is highly probable, and the risk of exposing any plain text file in a directory is high. The problem
+is so rampant that at one point there was a website scanning `github.com` for API_KEYS and posting them on a rolling kiosk. Exposures were occurring every few seconds. Many of these were for other APIs, but the risk of exposure through an inadvertent commit cannot be understated.
 
 The library provides a helper function that uses an encrypted local file
 to store API_KEYS for opening connections to REDCap. Using this function
@@ -119,7 +113,7 @@ used on a work desktop or laptop.
 
 #### MacOS and Password Prompts
 
-Unfortunately, at present `askpass` and `getPass` are broken on MacOS when using RStudio and pressing the 'Knit' button. Password
+Unfortunately, at present the packages `askpass` and `getPass` are broken on MacOS when using RStudio and pressing the 'Knit' button. Password
 prompts will return `NULL` and never query the user. A workaround for MacOS users is to execute the above snippet from the console to configure the crypto locker, and then modify their `Rmd` to use parameters for the password. 
 
 ````{verbatin}
@@ -150,10 +144,9 @@ unlockREDCap(c(test_conn    = 'TestRedcapAPI', # REDCap project 1
 
 #### Other API_KEY Leakage Risks
 
-Also to make sure that R in trying to be helpful doesn't save API_KEYs to 
-files, it is recommended to turn off any saving of workspace data. In RStudio
-this is under "Tools -> Global Options (General)", set 'Save Workspace to .RData on 
-exit' to *Never*.
+To prevent R from inadvertently saving API_KEYs to files, it is recommended to turn 
+off any saving of workspace data. In RStudio this is under "Tools -> Global Options 
+(General)", set 'Save Workspace to .RData on exit' to *Never*.
 
 For command line users create an `.Rprofile` file in your home directory 
 containing the following base function override:
@@ -169,18 +162,19 @@ utils::assignInNamespace(
 )
 ```
 
-More details on keyring management are in the `keyring` package. One useful function if one forgets the password is to delete it and try again, `keyring::keyring_delete("API_KEYs")`
+More details on keyring management are in the `keyring` package. If one forgets their password, 
+one helpful solution is to delete it and try again using the `keyring::keyring_delete("API_KEYs")` function.
 
-Once again per our design goals, our choices and recommendations do not limit the user. If you have your own system of API_KEY management, one can still open a connection directly using `redcapConnection`. 
+Once again, per our design goals, our choices and recommendations do not limit the user. If you have your own system of API_KEY management, one can still open a connection directly using `redcapConnection`. 
 
 If the easiest path is the best path, it will become the common path. We've
 done our best to make best security practice the easiest path. 
 
 ## The Connection Object (caching)
 
-The connection objects are a much richer object than the older version of the library. During a lot of REDCap 
-interaction the meta data is necessary to properly interpret the data and
-guides data transformation. Instead of calling multiple times with each
+The connection objects are a much richer object than the older version of the library. During many REDCap 
+interactions the meta data is necessary to properly interpret the data and
+guide data transformation. Instead of calling multiple times with each
 call for this data, the meta data is now cached in the connection object.
 
 Caching saves a lot of round trip calls, but brings with it the burden that
@@ -203,8 +197,8 @@ test_conn$flush_all()
 
 *Tip: Remember to flush cache after updating project meta data in the GUI.*
 
-Another benefit the new connection object brings is the idea of retry. When 
-developing, it's okay if the network hiccups, one can simple rerun the report
+Another benefit of the new connection object is the idea of retry. When 
+developing, it's okay if the network hiccups, one can simply rerun the report
 or command and try again. In a production environment, a report that makes
 a lot of API calls is assuming that all of those calls are successful to be
 successful. This is not that case 100% of the time, so a mitigation strategy
@@ -220,7 +214,7 @@ of the package gets this for **free** and by specifying `retries=10` it will try
 ## `exportRecordsTyped`
 
 `exportRecords`, `redcapFactor` and `redcapFlipFactor` still exist in the
-library but are deprecated. `exportRecordsTyped` is the preferred way forward. These functions will not longer be updated. 
+library but are deprecated. These functions will not longer be updated. `exportRecordsTyped` is the preferred method moving forward.  
 
 Armed with a connection from a secured API_KEY in one's R session, the 
 usual goal is to get the data into R, properly typed for use in an R
@@ -231,7 +225,7 @@ in mathematics and computer science and thus this topic is a complex.
 use cases.
 
 However, these choices are not a limitation. Care has been taken to allow
-each of these choices a user defined override and be extensible to handle
+a user defined override for each of these choices and to be extensible to handle
 just about anything the user would prefer. The strategy chosen is
 called _inversion of control_. 
 
@@ -254,7 +248,7 @@ the process to cast a column of data from a project:
 3. Fields that are not NA, that pass validation are then cast to the desired class.
 
 The choice of which routine to call is a defined by `field_type`. The current
-version of REDCap as of this writing is: `date_`, `datetime_`,
+version of REDCap at the time of this writing is: `date_`, `datetime_`,
 `datetime_seconds_`, `time_mm_ss`, `time_hh_mm_ss`, `time`, `float`, `number`,
 `calc`, `int`, `integer`, `yesno`, `truefalse`, `checkbox`, `form_complete`,
 `select`, `radio`, `dropdown`, and `sql`.
@@ -292,7 +286,7 @@ head(exportRecordsTyped(test_conn, na=list(date_=my_limited_na_detector))[,1:10]
 ```
 
 It is hopefully a rare case when this is needed. The next step, validation, has
-an available report that will hopefully make it clear when it is. 
+an available report that should clarify when it is required.
 
 ### Validation
 
@@ -400,8 +394,8 @@ list(
 )
 ```
 
-A common request is instead of using POSIXct for the dates, to use the
-internal as.Date function. 
+A common request is to use the internal as.Date function instead of POSIXct
+for handling dates.
 
 NOTE: An exported object `cast_raw` consists of NA for each of these keys. If 
 one desires raw data the cast function is NA. 
@@ -421,7 +415,7 @@ and control is in the hands of the user.
 ### Labels and Units
 
 Inversion of control is available for the assignment of attributes to columns
-as well. There exists an assignment argument which will is a list of functions
+as well. There exists an assignment argument which is a list of functions
 that will assign their output to the attribute using the name of the list key.
 
 The defaults add labels and units. 
@@ -460,7 +454,7 @@ The first we'll cover is `recastRecords`.
 
 ### `recastRecords`
 
-User have reported that `redcapFactorFlip` has been very useful for them
+Users have reported that `redcapFactorFlip` has been very useful for them
 to switch the way the data was cast in a back and forth manner. The current
 library has deprecated `redcapFactorFlip` and the new method to replace it
 is `recastRecords`.
@@ -532,7 +526,7 @@ FIXME: Make an example with splitForms after we finish the function.
 
 When working with repeating instruments in REDCap the default export is a
 tall and thin data frame where repeat instances are split into separate rows. 
-The `widerRepeated` function converts a data frame into a short and wide one and ignore any data.frame that is not a repeated_instrument (this allows for post processing pipelining). 
+The `widerRepeated` function converts this data frame into a short and wide one and ignores any data.frame that is not a repeated_instrument (this allows for post processing pipelining). 
 Instead of multiple rows for one record, this function will transform all the 
 data for each record into one row using `reshape`. The function accepts a single 
 form and returns the reshaped data frame.
@@ -549,7 +543,7 @@ widerRepeated(Records, test_conn)
 The `widerRepeated` function will not widen forms passed into it without 
 repeating instruments. It will return these records in the original format. 
 This function expects that all values in the `redcap_repeat_instrument` column 
-are the same. If this is not the case it will erro
+are the same. If this is not the case it will return and error.
 
 ### castForImport
 
