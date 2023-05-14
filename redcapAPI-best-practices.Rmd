@@ -113,7 +113,7 @@ used on a work desktop or laptop.
 
 #### MacOS and Password Prompts
 
-Unfortunately, at present the packages `askpass` and `getPass` are broken on MacOS when using RStudio and pressing the 'Knit' button. Password
+Unfortunately, at present the package `getPass` is broken on MacOS when using RStudio and pressing the 'Knit' button, and the alternative package `askpass` doesn't work on any platform in this case. Password
 prompts will return `NULL` and never query the user. A workaround for MacOS users is to execute the above snippet from the console to configure the crypto locker, and then modify their `Rmd` to use parameters for the password. 
 
 ````{verbatin}
