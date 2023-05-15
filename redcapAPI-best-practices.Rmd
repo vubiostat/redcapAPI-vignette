@@ -94,7 +94,7 @@ does not connect the call will fail and halt execution in R and it will be
 deleted from the key_ring to prompt one to enter it again. Subsequent 
 calls will not prompt for an API_KEY, just the password one has given
 to unlock the remaining keys in the locker. It will stay open in an R session
-and not prompt again (*caveat: each knitr call creates a new session, so it
+and not prompt again (*caveat: each knit button press from RStudio creates a new session, so it
 will prompt each call to knitr*). 
 
 Specifying `envir=globalenv()` tells the function to create the connections
