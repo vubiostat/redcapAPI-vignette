@@ -442,7 +442,7 @@ forms. I.e., REDCap raw data is in "block sparse" format and what users really w
 exportRecordsTyped(test_conn, forms="repeating_instrument")
 ```
 
-There are only 2 rows from a test project with over 20 rows of data. 
+There are only 2 rows from a test project with over 20 rows of data for this form. 
 
 ## Post Processing
 
@@ -664,7 +664,7 @@ ForImport <-
 importRecords(test_conn, 
               data = ForImport)
 ```
-## Even More
+## Helper Functions
 
 ### Bulk Records Pull
 
@@ -760,7 +760,7 @@ test database this was built from
 
 FIXME: Thomas Dupont - Example building test database here. Pull from existing tests.
 
-### Design Ones Own API Calls
+### Custom API Calls
 
 `redcapAPI` calls are very specific in how they access the REDCap API and leave 
 very little flexibility to the user in the choice of arguments to pass to the
