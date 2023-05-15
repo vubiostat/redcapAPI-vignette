@@ -35,8 +35,8 @@ are considerably more extensive. This document will outline the best practices a
 
 The ultimate goal is to minimize the number of calls a user needs to make to accomplish their task and 
 have the data prepared for analysis. This can't happen without user involvement--if the library doesn't 
-work easily for your needs please open an issue on [github](https://github.com/vubiostat/redcapAPI/issues) and 
-we will do our best to work with you. 
+work easily for ones needs please open an issue on [github](https://github.com/vubiostat/redcapAPI/issues) and 
+we will do our best to provide a solution. 
 
 If one wishes to reproduce these examples, see '*Reproducing this Vignette*' towards the end of this document. 
 
@@ -45,7 +45,7 @@ If one wishes to reproduce these examples, see '*Reproducing this Vignette*' tow
 The first thing to consider is the API_KEY. This key is what enables the export of data 
 from a REDCap project. It is the equivalent of a user name, password and
 project identifier in a single character string. As such it should be protected
-as strongly as your password into the systems that store one's data. In the
+as strongly as one's password into the systems that store one's data. In the
 United States, the HIPAA law has a minimum violation of $100 per private health
 record exposed. In a large clinical trial setting this can easily run into
 millions of dollars of potential risk.
@@ -89,10 +89,10 @@ The first time this is called, it asks the user for a password that will be used
 to unlock the crypto locker `API_KEYs`. A keyring can contain multiple API_KEYs
 and hence the name we've given it here--one is free to use any naming they
 desire. The first time it is run it will prompt for each
-API_KEY by the name you've given it, e.g. 'TestRedcapAPI'. If an API_KEY
+API_KEY by the name one has given it, e.g. 'TestRedcapAPI'. If an API_KEY
 does not connect the call will fail and halt execution in R and it will be
-deleted from the key_ring to prompt you to enter it again. Subsequent 
-calls will not prompt for an API_KEY, just the password you've given
+deleted from the key_ring to prompt one to enter it again. Subsequent 
+calls will not prompt for an API_KEY, just the password one has given
 to unlock the remaining keys in the locker. It will stay open in an R session
 and not prompt again (*caveat: each knitr call creates a new session, so it
 will prompt each call to knitr*). 
@@ -148,7 +148,7 @@ To prevent R from inadvertently saving API_KEYs to files, it is recommended to t
 off any saving of workspace data. In RStudio this is under "Tools -> Global Options 
 (General)", set 'Save Workspace to .RData on exit' to *Never*.
 
-For command line users create an `.Rprofile` file in your home directory 
+For command line users create an `.Rprofile` file in one's home directory 
 containing the following base function override:
 
 ```
@@ -165,7 +165,7 @@ utils::assignInNamespace(
 More details on keyring management are in the `keyring` package. If one forgets their password, 
 one helpful solution is to delete it and try again using the `keyring::keyring_delete("API_KEYs")` function.
 
-Once again, per our design goals, our choices and recommendations do not limit the user. If you have your own system of API_KEY management, one can still open a connection directly using `redcapConnection`. 
+Once again, per our design goals, our choices and recommendations do not limit the user. If one has their own system of API_KEY management, one can still open a connection directly using `redcapConnection`. 
 
 If the easiest path is the best path, it will become the common path. We've
 done our best to make best security practice the easiest path. 
@@ -328,7 +328,7 @@ list(
 )
 ```
 
-Ignore the complex regular expressions above if you're not familiar. Let's look
+Ignore the complex regular expressions above if unfamiliar. Let's look
 at a building a simple validation for `form_complete`: `valRx("^[012]$")`. The
 regex here starts with "^" for beginning of string, it's followed by a set
 in square brakets meaning to match one of those characters, then the "$" meaning
@@ -616,7 +616,7 @@ list(
 At this time, we have not changed anything within `importRecords`. Doing so 
 would require making a breaking change and we aren't prepared to do that on 
 short notice. However, we are considering this change in the future. For that 
-reason, we advise changing your processes to utilize `castForImport` prior
+reason, we advise changing ones processes to utilize `castForImport` prior
 to importing data. 
 
 #### Customizing Checkbox Casting
@@ -713,7 +713,7 @@ missingSummary(test_conn,
 ```
 
 One limitation of `missingSummary`, however, is that the summary operates 
-exclusively within each row of the data. Thus, if your branching logic 
+exclusively within each row of the data. Thus, if ones branching logic 
 utilizes values from previous events, this summary will not correctly identify
 non-missing values. 
 
@@ -760,7 +760,7 @@ test database this was built from
 
 FIXME: Thomas Dupont - Example building test database here. Pull from existing tests.
 
-### Design your own API Calls
+### Design Ones Own API Calls
 
 `redcapAPI` calls are very specific in how they access the REDCap API and leave 
 very little flexibility to the user in the choice of arguments to pass to the
