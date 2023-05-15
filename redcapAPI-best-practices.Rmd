@@ -114,19 +114,12 @@ used on a work desktop or laptop.
 
 #### MacOS and Password Prompts
 
-Unfortunately, at present the package `getPass` is broken on MacOS when using RStudio and pressing the 'Knit' button, and the alternative package `askpass` doesn't work on any platform in this case. Password
-prompts will return `NULL` and never query the user. A workaround for MacOS users is to execute the above snippet from the console to configure the crypto locker, and then modify their `Rmd` to use parameters for the password. From RStudio one now uses `Knit -> Knit with Parameters` to trigger the document generation.
+Unfortunately, at present the package `getPass` is broken on MacOS when using RStudio and pressing the 'Knit' button, and the alternative package `askpass` doesn't work on any platform in this case. If one wishes to use RStudio and `knitr` on MacOS then the 
+`rstudioapi` package should be installed and `passwordFUN=rstudioapi::askForPassword` should
+be specified in the call. 
+
 
 ````{verbatin}
----
-title: "example MacOS w/ Params"
-output: html_document
-params: 
-  password:
-    label: "Enter Password for API_KEYs"
-    input: password
-    value: ""
----
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -139,7 +132,7 @@ unlockREDCap(c(test_conn    = 'TestRedcapAPI', # REDCap project 1
              keyring      = 'API_KEYs',
              envir        = globalenv(),
              url          = 'https://redcap.vanderbilt.edu/api/',
-             passwordFUN  = function(...) params$password) 
+             passwordFUN  = rstudioapi::askForPassword) # For RStudio + MacOS
 ```
 ````
 
