@@ -83,7 +83,8 @@ unlockREDCap(c(test_conn    = 'TestRedcapAPI', # REDCap project 1
                sandbox_conn = 'SandboxAPI'),   # REDCap project 2
              keyring      = 'API_KEYs',
              envir        = globalenv(),
-             url          = 'https://redcap.vanderbilt.edu/api/') 
+             url          = 'https://redcap.vanderbilt.edu/api/',
+             passwordFUN  = rstudioapi::askForPassword)  # RStudio+MacOS
 ```
 
 The first time this is called, it asks the user for a password that will be used
@@ -116,25 +117,10 @@ used on a work desktop or laptop.
 
 Unfortunately, at present the package `getPass` is broken on MacOS when using RStudio and pressing the 'Knit' button, and the alternative package `askpass` doesn't work on any platform in this case. If one wishes to use RStudio and `knitr` on MacOS then the 
 `rstudioapi` package should be installed and `passwordFUN=rstudioapi::askForPassword` should
-be specified in the call. 
+be specified in the call.
 
-
-````{verbatin}
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(redcapAPI)
-
-options(keyring_backend=keyring::backend_file) # For MacOS
-
-unlockREDCap(c(test_conn    = 'TestRedcapAPI', # REDCap project 1
-               sandbox_conn = 'SandboxAPI'),   # REDCap project 2
-             keyring      = 'API_KEYs',
-             envir        = globalenv(),
-             url          = 'https://redcap.vanderbilt.edu/api/',
-             passwordFUN  = rstudioapi::askForPassword) # For RStudio + MacOS
-```
-````
+If one is not running from RStudio+MacOS the `passwordFUN` argument is not required
+and should be left off. 
 
 #### Other API_KEY Leakage Risks
 
