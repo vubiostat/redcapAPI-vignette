@@ -736,9 +736,17 @@ API and indicates which are supported by `redcapAPI`.
 ### Reproducing this Vignette
 
 This requires building one's own test database. Functions to build a REDCap project and load with data are included, as well as the
-test database this was built from 
+test database this was built from.
 
-FIXME: Thomas Dupont - Example building test database here. Pull from existing tests.
+Use `restoreProject` to create one's own test database and `purgeProject` to purge
+the data and metadata from the REDCap project.
+
+```{r, eval = FALSE}
+purgeProject(rcon, records = TRUE)
+
+load(file.path(path.package('redcapAPI'), "extdata", "testingBranchingLogic", "TestingBranchingLogic.Rdata"))
+restoreProject(TestingBranchingLogic, rcon = rcon)
+```
 
 ### Custom API Calls
 
