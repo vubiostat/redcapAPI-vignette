@@ -735,16 +735,27 @@ API and indicates which are supported by `redcapAPI`.
 
 ### Reproducing this Vignette
 
-This requires building one's own test database. Functions to build a REDCap project and load with data are included, as well as the
-test database this was built from.
+To reproduce this vignette one must build a copy of the `redcapAPI` test
+database. The first step is creating a new project via the REDCap web
+interface and generating an API Key. Using this key create a connection
+as usual, then `restoreProject` will install all forms and data used
+in the construction of this vignette.
 
-Use `restoreProject` to create one's own test database and `purgeProject` to purge
-the data and metadata from the REDCap project.
+In addition, there are other project helper functions available. `purgeProject`
+will purge
+all data and metadata from a REDCap project. Once can create their own archive 
+of a REDCap project using `preserveProject`.
 
 ```{r, eval = FALSE}
-purgeProject(rcon, records = TRUE)
+purgeProject(rcon, records = TRUE) # Delete everything in the project
 
-load(file.path(path.package('redcapAPI'), "extdata", "testingBranchingLogic", "TestingBranchingLogic.Rdata"))
+# Find path to project definition in package
+load(file.path(path.package('redcapAPI'),
+     "extdata",
+     "testingBranchingLogic",
+     "TestingBranchingLogic.Rdata"))
+
+# Rebuild the Project
 restoreProject(TestingBranchingLogic, rcon = rcon)
 ```
 
