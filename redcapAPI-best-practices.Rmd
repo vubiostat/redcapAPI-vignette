@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-[REsearch Data Collection or REDCap](https://projectredcap.org) puts a lot of power into the hands 
+[Research Electronic Data Capture or REDCap](https://projectredcap.org) puts a lot of power into the hands 
 of those wishing to collect data, from surveys to running clinical trials. Once the data is 
 collected the statistician or data scientist is responsible for summarizing the collected data 
 into reports. [R](https://www.r-project.org/) being a useful tool for this purpose, the department of
@@ -64,7 +64,7 @@ is so rampant that at one point there was a website scanning `github.com` for AP
 
 The library provides a helper function that uses an encrypted local file
 to store API_KEYS for opening connections to REDCap. Using this function
-greatly reduces the risk of exposure. It has tools to facilitate a transfer of code to an automated environment as well. `?unlockREDcap` for those details. 
+greatly reduces the risk of exposure. It has tools to facilitate a transfer of code to an automated environment as well. See `?unlockREDcap` for those details. 
 
 Note: *This functionality was originally in the package `rccola`, but this
 library is no longer needed. The functionality is built into `redcapAPI` and
@@ -109,7 +109,7 @@ compromised it is far more difficult for a hacker to gain further access due
 to the encryption. 
 
 This library also cooperates with our production environments by looking for
-these things in an plain text file `yml` in the directory above execution. This
+these things in a plain text file `yml` in the directory above execution. This
 functionality is *only* recommended for system admins and should **never** be
 used on a work desktop or laptop.
 
@@ -180,8 +180,7 @@ test_conn$flush_all()
 Another benefit of the new connection object is the idea of retry. When 
 developing, it's okay if the network hiccups, one can simply rerun the report
 or command and try again. In a production environment, a report that makes
-a lot of API calls is assuming that all of those calls are successful to be
-successful. This is not that case 100% of the time, so a mitigation strategy
+a lot of API calls is assuming that all of those calls are successful in order to complete execution. This is not that case 100% of the time, so a mitigation strategy
 is needed on the connection object. This is implemented via the `retries`,
 `retry_interval` and `retry_quietly` parameters when calling to build the
 connection objects. These are passed to `redcapAPI::redcapConnection` as
@@ -189,23 +188,23 @@ additional parameters.
 The default is to quietly make 5 retries on a call, with an interval of 2, 4, 8,
 16, and 32 seconds between retries. This greatly improves the odds of
 building a complex report involving a lot of REDCap calls. The user
-of the package gets this for **free** and by specifying `retries=10` it will try up to 30 minutes per call if necessary--allowing for downtime under this to not affect the generation of a report. This is important on automated systems that require reliabilily and can wait.  
+of the package gets this for **free** and by specifying `retries=10` it will try up to 30 minutes per call if necessary--allowing for downtime under this to not affect the generation of a report. This is important on automated systems that require reliability and can wait.  
 
 ## `exportRecordsTyped`
 
 `exportRecords`, `redcapFactor` and `redcapFlipFactor` still exist in the
-library but are deprecated. These functions will not longer be updated. `exportRecordsTyped` is the preferred method moving forward.  
+library but are deprecated. These functions will no longer be updated. `exportRecordsTyped` is the preferred method moving forward.  
 
 Armed with a connection from a secured API_KEY in one's R session, the 
 usual goal is to get the data into R, properly typed for use in an R
 model. Dates and Factors need to be converted into a usable format that makes
 statistical modelling easy. Type theory is a very deep theoretical topic
-in mathematics and computer science and thus this topic is a complex.
+in mathematics and computer science and thus this topic is complex.
 `redcapAPI` has made a lot of default choices which we felt will satisfy 80% of
 use cases.
 
-However, these choices are not a limitation. Care has been taken to allow
-a user defined override for each of these choices and to be extensible to handle
+However, these choices are not a limitation. Care has been taken to allow user 
+defined overrides for each of these choices and to be extensible to handle
 just about anything the user would prefer. The strategy chosen is
 called _inversion of control_. 
 
@@ -245,7 +244,7 @@ an override.
 
 The expected function signature is `function(x, field_name, coding)`. The
 following demonstrates some test data. It follows with a declaration that date 
-"2023-03-24" is to be treated as NA. Then, "2023-03-24" is only to be treated
+"2023-02-24" is to be treated as NA. Then, "2023-03-24" is only to be treated
 as NA for the field `date_mdy`.  Coding is only provided if there is a
 defined code book for the variable. 
 
@@ -636,7 +635,7 @@ before calling `importRecords`.
 ```{r, eval = FALSE}
 ForImport <- 
   castForImport(Records, 
-                test_cond, 
+                test_conn, 
                 fields = "checkbox_test___x", 
                 cast = list(checkbox = castCheckForImport(checked = "0"))) |>
   castForImport(test_conn)
@@ -693,7 +692,7 @@ missingSummary(test_conn,
 ```
 
 One limitation of `missingSummary`, however, is that the summary operates 
-exclusively within each row of the data. Thus, if ones branching logic 
+exclusively within each row of the data. Thus, if one's branching logic 
 utilizes values from previous events, this summary will not correctly identify
 non-missing values. 
 
