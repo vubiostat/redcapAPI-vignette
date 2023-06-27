@@ -1,0 +1,52 @@
+---
+title: "Block Sparse Figure"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+```{r}
+set.seed(442560557)
+forms <- c(10, 7, 12, 9)
+n <- length(forms)
+cols <- rows <- sum(forms)
+membership <- replicate(rows, rbinom(n, 1, 1/n))
+bs <- sapply(seq(rows), function(i) {
+  (rep(membership[,i], times=forms) == 1) & (rbinom(cols, 1, 0.75) == 1)
+})
+plot(0:1, 0:1, typ="n", xlim=c(0, cols+1), ylim=c(0, rows+1), ylab='', xlab='', axes=FALSE,
+     main="Raw Data Example")
+for(x in 1:cols)
+  for(y in 1:rows)
+    if(bs[x,y]) polygon(c(x, x+1, x+1, x), c(y, y, y+1, y+1), col='darkblue')
+```
+
+```{r}
+plot(0:1, 0:1, typ="n", xlim=c(0, cols+1), ylim=c(0, rows+1), ylab='', xlab='', axes=FALSE,
+     main="Block Sparse Sorted Example")
+
+ord <- order(((2^(0:(n-1))) %*% membership)[1,])
+
+bso <- bs[,ord]
+
+for(x in 1:cols)
+  for(y in 1:rows)
+    if(bso[x,y]) polygon(c(x, x+1, x+1, x), c(y, y, y+1, y+1), col='darkblue')
+box <- function(x1,x2, y1, y2) lines(c(x1, x2, x2, x1, x1), c(y1, y1, y2, y2, y1), col='red', lwd=2)
+box( 1, 11,  8, 14)
+box(11, 18, 14, 23)
+box( 1, 11, 22, 23)
+box(11, 18, 28, 31)
+box(18, 30, 23, 31)
+box(30, 39, 31, 39)
+box(18, 30, 35, 39)
+box(11, 18, 38, 39)
+box( 1, 11, 36, 39)
+box( 1, 11, 34, 35)
+
+text( 5, 5, "Form 1", pos=1)
+text(15, 5, "Form 2", pos=1)
+text(24, 5, "Form 3", pos=1)
+text(35, 5, "Form 4", pos=1)
+```

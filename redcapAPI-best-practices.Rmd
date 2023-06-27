@@ -25,7 +25,7 @@ package [`redcapAPI`](https://cran.r-project.org/package=redcapAPI) to facilitat
 to no longer align with the current state of the REDCap project. The original package started 
 to directly expose the raw API in R and the common needs of users propagated via snippets of R code. 
 To address the true needs of the user, a major refactor based on user feedback was undertaken to 
-better address the challenges of a researcher in todays computing environments. This new interface
+better address the challenges of a researcher in today's computing environments. This new interface
 began with version 2.7.0.
 
 The primary change has been in the method of retrieving records, which has shifted from using 
@@ -36,7 +36,7 @@ are considerably more extensive. This document will outline the best practices a
 
 The ultimate goal is to minimize the number of calls a user needs to make to accomplish their task and 
 have the data prepared for analysis. This can't happen without user involvement--if the library doesn't 
-work easily for ones needs please open an issue on [github](https://github.com/vubiostat/redcapAPI/issues) and 
+work easily for ones needs, please open an issue on [GitHub](https://github.com/vubiostat/redcapAPI/issues) and 
 we will do our best to provide a solution. 
 
 If one wishes to reproduce these examples, see '*Reproducing this Vignette*' towards the end of this document. 
@@ -56,7 +56,7 @@ it's on a tightly monitored and secured production system that cannot work
 without it.
 
 Logging into REDCap every time one wants to work, and then juggling
-multiple API_KEYs quickly becomes burdensome. Copying and pasting that API_KEY
+multiple API_KEYs will quickly become burdensome. Copying and pasting that API_KEY
 into code (plain text!) and then remembering to delete when finished is too
 easy to forget. A single git commit and simple push to share code and
 the API_KEY is exposed to the world. Making a mistake is highly probable, and the risk of exposing any plain text file in a directory is high. The problem
@@ -83,8 +83,7 @@ unlockREDCap(c(test_conn    = 'TestRedcapAPI', # REDCap project 1
                sandbox_conn = 'SandboxAPI'),   # REDCap project 2
              keyring      = 'API_KEYs',
              envir        = globalenv(),
-             url          = 'https://redcap.vanderbilt.edu/api/',
-             passwordFUN  = rstudioapi::askForPassword)  # RStudio+MacOS
+             url          = 'https://redcap.vanderbilt.edu/api/')  
 ```
 
 The first time this is called, it asks the user for a password that will be used
@@ -96,15 +95,15 @@ does not connect the call will fail and halt execution in R and it will be
 deleted from the key_ring to prompt one to enter it again. Subsequent 
 calls will not prompt for an API_KEY, just the password one has given
 to unlock the remaining keys in the locker. It will stay open in an R session
-and not prompt again (*caveat: each knit button press from RStudio creates a new session, so it
-will prompt each call to knitr*). 
+and not prompt again. *caveat: each knit button press from RStudio creates a new session, so it
+will prompt each call to knitr*. MacOS has a password prompt problem with `getPass`; this only works from RStudio at present on MacOS.
 
 Specifying `envir=globalenv()` tells the function to create the connections
 in the global environment as variables. Without this the function returns 
 a list of the connections. 
 
 In summary, the keyring is stored in an 
-encrypted form accessible by a single password. If ones laptop were stolen or
+encrypted form accessible by a single password. If one's laptop were stolen or
 compromised it is far more difficult for a hacker to gain further access due
 to the encryption. 
 
@@ -157,11 +156,11 @@ interactions the meta data is necessary to properly interpret the data and
 guide data transformation. Instead of calling multiple times with each
 call for this data, the meta data is now cached in the connection object.
 
-Caching saves a lot of round trip calls, but brings with it the burden that
+Caching saves a lot of round trip calls but brings with it the burden that
 sometimes it needs to be refreshed. For example, one is developing in a 
 REDCap object and has an R environment interacting with it. After a call, 
 it's noted that something needs changed in the project proper. Using the REDCap
-GUI the project's definition is changed. This requires flushing the cache
+GUI, the project's definition is changed. This requires flushing the cache
 so the next call will retrieve and cached the new data. 
 
 ```{r flushcache}
@@ -188,7 +187,7 @@ additional parameters.
 The default is to quietly make 5 retries on a call, with an interval of 2, 4, 8,
 16, and 32 seconds between retries. This greatly improves the odds of
 building a complex report involving a lot of REDCap calls. The user
-of the package gets this for **free** and by specifying `retries=10` it will try up to 30 minutes per call if necessary--allowing for downtime under this to not affect the generation of a report. This is important on automated systems that require reliability and can wait.  
+of the package gets this for **free** and by specifying `retries=10` it will try up to 30 minutes per call if necessary, allowing downtime to not affect report generation. This is important on automated systems that require reliability and can wait.  
 
 ## `exportRecordsTyped`
 
@@ -310,7 +309,7 @@ list(
 Ignore the complex regular expressions above if unfamiliar. Let's look
 at a building a simple validation for `form_complete`: `valRx("^[012]$")`. The
 regex here starts with "^" for beginning of string, it's followed by a set
-in square brakets meaning to match one of those characters, then the "$" meaning
+in square brackets meaning to match one of those characters, then the "$" meaning
 end of string. Thus, it asks to build a validation function of the right
 signature that will return a vector that is TRUE for input that is a single
 character "0", "1" or "2" and FALSE otherwise. 
@@ -529,7 +528,7 @@ are the same. If this is not the case it will return and error.
 While it is true that `importRecords` will convert most data types into a 
 format that can be imported, it has proven to be overly rigid with blind 
 spots that cannot be easily overcome. In order to provide better support for
-importing data, we have provided the stand alone function `castForImport`.
+importing data, we have provided the stand-alone function `castForImport`.
 
 `castForImport` follows the same strategy of validation and casting 
 used in `exportRecordsTyped`. It returns a data frame where the fields are 
@@ -595,7 +594,7 @@ list(
 At this time, we have not changed anything within `importRecords`. Doing so 
 would require making a breaking change and we aren't prepared to do that on 
 short notice. However, we are considering this change in the future. For that 
-reason, we advise changing ones processes to utilize `castForImport` prior
+reason, we advise changing one's processes to utilize `castForImport` prior
 to importing data. 
 
 #### Customizing Checkbox Casting
@@ -696,7 +695,7 @@ exclusively within each row of the data. Thus, if one's branching logic
 utilizes values from previous events, this summary will not correctly identify
 non-missing values. 
 
-### Cornacopia of Functions to explore
+### Cornucopia of Functions to explore
 
 The functions offered by `redcapAPI` have expanded significantly in recent
 versions. The table below names all of the methods provided by the REDCap
