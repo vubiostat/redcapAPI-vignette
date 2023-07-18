@@ -82,7 +82,7 @@ millions of dollars of potential risk.
 Therefore, **the API_KEY should never be stored in a plain text file** unless
 it's on a tightly monitored and secured production system that cannot work
 without it.
-
+f
 Logging into REDCap every time one wants to work, and then juggling
 multiple API_KEYs will quickly become burdensome. Copying and pasting that API_KEY
 into code (plain text!) and then remembering to delete when finished is all too
@@ -490,10 +490,10 @@ box(11, 18, 38, 39)
 box( 1, 11, 36, 39)
 box( 1, 11, 34, 35)
 
-text( 5, 5, "Form 1", pos=1)
-text(15, 5, "Form 2", pos=1)
-text(24, 5, "Form 3", pos=1)
-text(35, 5, "Form 4", pos=1)
+text( 5, 5, "Form 1", pos=1, cex=0.7)
+text(15, 5, "Form 2", pos=1, cex=0.7)
+text(24, 5, "Form 3", pos=1, cex=0.7)
+text(35, 5, "Form 4", pos=1, cex=0.7)
 ```
 
 Only the highlighted in red data is desired for processing.
@@ -720,10 +720,10 @@ importRecords(test_conn,
 ```
 ## Helper Functions
 
-### Bulk Records Pull
+### All Together Now: `exportBulkRecords`
 
-A helper function is provided that will pull a set of projects and/or forms
-from projects into memory and apply a post processor set in bulk. 
+For a user interested in pulling all the data for a project or set of projects, the `exportBulkRecords` function brings all this together in a helper function. It breaks it down by form, can deal with multiple connections and apply a set of post processing choices to all pulls in a single call. Any additional arguments are sent to each `exportRecordsTyped`. This is in a sense the `apply` for `redcapAPI` exports. If the forms argument is not specified it will default to all forms in a project.
+
 
 ```{r}
 exportBulkRecords(
@@ -772,7 +772,7 @@ exclusively within each row of the data. Thus, if one's branching logic
 utilizes values from previous events, this summary will not correctly identify
 non-missing values. 
 
-### Cornucopia of Functions to explore
+## Cornucopia of Functions to explore
 
 The functions offered by `redcapAPI` have expanded significantly in recent
 versions. The table below names all of the methods provided by the REDCap
@@ -808,7 +808,7 @@ API and indicates which are supported by `redcapAPI`.
 |                 |        |        |        | importUserRoleAssigments (No) |
 
 
-### Reproducing this Vignette
+## Reproducing this Vignette
 
 To reproduce this vignette one must build a copy of the `redcapAPI` test
 database. The first step is creating a new project via the REDCap web
@@ -834,7 +834,7 @@ load(file.path(path.package('redcapAPI'),
 restoreProject(TestingBranchingLogic, rcon = rcon)
 ```
 
-### Custom API Calls
+## Custom API Calls
 
 `redcapAPI` calls are very specific in how they access the REDCap API and leave 
 very little flexibility to the user in the choice of arguments to pass to the
@@ -885,11 +885,11 @@ makeApiCall(rcon,
                      vectorToApiBodyList(c(1, 3, 4), "arms")))
 ```
 
-### Debugging Raw Connection
+## Debugging Raw Connection
 
 The library from 2.7.3 up supports `httr` debugging. 
 
-```{r}
+```{r, echo=TRUE, message=TRUE, warning=TRUE, error=TRUE }
 library(httr)
 with_config(verbose(data_out=FALSE, data_in=TRUE, ssl=TRUE),
             { test <- exportRecordsTyped(test_conn, 
