@@ -891,10 +891,12 @@ The library from 2.7.3 up supports `httr` debugging.
 
 ```{r, echo=TRUE, message=TRUE, warning=TRUE, error=TRUE }
 library(httr)
+capture.output(
 with_config(verbose(data_out=FALSE, data_in=TRUE, ssl=TRUE),
             { test <- exportRecordsTyped(test_conn, 
                               records = 10:20, 
-                              forms = "data_import_export") })
+                              forms = "data_import_export") }),
+type="message")
 ```
 
 
