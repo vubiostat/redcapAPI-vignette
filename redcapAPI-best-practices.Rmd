@@ -102,7 +102,7 @@ solution.*
 
 ```{r unlock}
 library(redcapAPI)
-library(Hmisc)
+suppressWarnings(library(Hmisc))
 library(httr)
 
 options(keyring_backend=keyring::backend_file) # Put in .Rprofile
@@ -515,10 +515,10 @@ is `recastRecords`.
 
 ```{r recast}
 exportRecordsTyped(test_conn,
-  fields=c("record_id", "date_dmy",
-           "date_mdy", "prereq_yesno")) |>
+  fields=c("record_id", "date_dmy_test",
+           "date_mdy_test", "prereq_yesno")) |>
   recastRecords(test_conn,
-                fields = c("date_dmy", "date_mdy", "prereq_yesno"),
+                fields = c("date_dmy_test", "date_mdy_test", "prereq_yesno"),
                 cast   = list(date_  = as.Date,
                               yesno = castRaw)) |>
 head()
@@ -548,7 +548,7 @@ This is kept as a separate function to ensure that the user makes
 a clear choice in using guesswork. 
 
 ```{r guess}
-exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
+exportRecordsTyped(test_conn, fields="date_dmy_test", cast=raw_cast) |>
   guessCast(
     test_conn,
     validation=valRx("^[0-9]{1,4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$"), 
@@ -559,7 +559,7 @@ exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
 Since dates are common, a helper specifically for this guess is provided.
 
 ```{r guessDate}
-exportRecordsTyped(test_conn, fields="date_dmy", cast=raw_cast) |>
+exportRecordsTyped(test_conn, fields="date_dmy_test", cast=raw_cast) |>
   guessDate(test_conn, threshold=0.1)
 ```
 
@@ -613,7 +613,7 @@ cast in a format (usually character) that can be passed into `importRecords`.
 ```{r}
 Records <- exportRecordsTyped(test_conn, 
                               records = 10:29, 
-                              forms = "data_import_export")
+                              forms = "multiple_choice")
 
 Records$checkbox_test___x
 

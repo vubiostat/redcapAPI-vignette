@@ -5,3 +5,5 @@ redcapAPI-best-practices.knit.md
 *.log
 *.out
 *.tex
+*.md
+figure/
